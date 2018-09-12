@@ -166,13 +166,5 @@ public class ParseExceptionTestCase extends BaseTestCase
        assertEvalEquals("test1", "#macro(foo $a)$a#end#foo('test1' 'test2')");
     }
 
-    /**
-     * Minus is not any more allowed inside a symbol (reference, property or method).
-     * @throws Exception
-     */
-    public void testParseExceptionMinusSignDissalowed()
-        throws Exception
-    {
-        assertEvalExceptionAt("${foo-bar}", 1, 6);
-    }
+
 }

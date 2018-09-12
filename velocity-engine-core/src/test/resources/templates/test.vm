@@ -70,8 +70,8 @@ This is the $foo way.
 
 
 
-#set($iam_cool = "jon")
-$iam_cool
+#set($iam-cool = "jon")
+$iam-cool
 $!nada nothing here
 
 function preload(imgObj,imgSrc)
