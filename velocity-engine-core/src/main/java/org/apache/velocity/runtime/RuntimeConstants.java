@@ -216,6 +216,12 @@ public interface RuntimeConstants
     String VM_ARGUMENTS_STRICT = "velocimacro.arguments.strict";
 
     /**
+     * If false will not attempt to restore argument values after macro call.
+     * For backwards compatibility.
+     */
+    String VM_ARGUMENTS_RESTORE_PREVIOUS = "velocimacro.arguments.restore.previous";
+
+    /**
      * Specify the maximum depth for macro calls
      * @since 1.6
      */
@@ -226,6 +232,8 @@ public interface RuntimeConstants
      * @since 1.7
      */
     String VM_BODY_REFERENCE = "velocimacro.body.reference";
+
+
 
     /*
      * ----------------------------------------------------------------------

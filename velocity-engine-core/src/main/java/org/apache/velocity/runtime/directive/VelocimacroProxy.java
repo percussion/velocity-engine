@@ -52,6 +52,7 @@ public class VelocimacroProxy extends Directive
     private boolean strictArguments;
     private int maxCallDepth;
     private String bodyReference;
+    private boolean restoreArguments;
 
     /**
      * Return name of this Velocimacro.
@@ -143,6 +144,9 @@ public class VelocimacroProxy extends Directive
         strictArguments = rsvc.getBoolean(
             RuntimeConstants.VM_ARGUMENTS_STRICT, false);
 
+        restoreArguments = rsvc.getBoolean(
+                RuntimeConstants.VM_ARGUMENTS_RESTORE_PREVIOUS, false);
+
         // get the macro call depth limit
         maxCallDepth = rsvc.getInt(RuntimeConstants.VM_MAX_DEPTH);
 
@@ -222,23 +226,27 @@ public class VelocimacroProxy extends Directive
                 }
             }
 
-            for (int i = 1; i < macroArgs.size(); i++)
+            if (values!=null)
             {
-                MacroArg macroArg = macroArgs.get(i);
-                current = context.get(macroArg.name);
-                if (current == values[(i-1) * 2 + 1])
+                for (int i = 1; i < macroArgs.size(); i++)
                 {
-                    Object old = values[(i-1) * 2];
-                    if (old != null)
+                    MacroArg macroArg = macroArgs.get(i);
+                    current = context.get(macroArg.name);
+                    if (current == values[(i-1) * 2 + 1])
                     {
-                        context.put(macroArg.name, old);
-                    }
-                    else
-                    {
-                        context.remove(macroArg.name);
+                        Object old = values[(i-1) * 2];
+                        if (old != null)
+                        {
+                            context.put(macroArg.name, old);
+                        }
+                        else
+                        {
+                            context.remove(macroArg.name);
+                        }
                     }
                 }
             }
+
         }
     }
 
@@ -305,13 +313,14 @@ public class VelocimacroProxy extends Directive
                                          Node node, int callArgNum)
     {
     	// Changed two dimensional array to single dimensional to optimize memory lookups
-        Object[] values = new Object[macroArgs.size() * 2];
+        Object[] values = restoreArguments ? null : new Object[macroArgs.size() * 2];
 
         // Move arguments into the macro's context. Start at one to skip macro name
         for (int i = 1; i < macroArgs.size(); i++)
         {
             MacroArg macroArg = macroArgs.get(i);
-            values[(i-1) * 2] = context.get(macroArg.name);
+            if (values!=null)
+                values[(i-1) * 2] = context.get(macroArg.name);
 
             // put the new value in
             Object newVal = null;
@@ -348,7 +357,8 @@ public class VelocimacroProxy extends Directive
             }
 
             context.put(macroArg.name, newVal);
-            values[(i-1) * 2 + 1] = newVal;
+            if (values!=null)
+                values[(i-1) * 2 + 1] = newVal;
         }
 
         // return the array of replaced and new values
