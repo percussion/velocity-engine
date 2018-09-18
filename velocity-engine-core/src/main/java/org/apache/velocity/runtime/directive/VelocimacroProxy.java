@@ -313,7 +313,7 @@ public class VelocimacroProxy extends Directive
                                          Node node, int callArgNum)
     {
     	// Changed two dimensional array to single dimensional to optimize memory lookups
-        Object[] values = restoreArguments ? null : new Object[macroArgs.size() * 2];
+        Object[] values = restoreArguments ? new Object[macroArgs.size() * 2] : null ;
 
         // Move arguments into the macro's context. Start at one to skip macro name
         for (int i = 1; i < macroArgs.size(); i++)
